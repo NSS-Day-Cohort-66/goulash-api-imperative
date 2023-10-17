@@ -61,6 +61,21 @@ def list_haulers(query_params):
                 ON d.id = h.dock_id
             """
             )
+        elif "_embed" in query_params:
+            db_cursor.execute(
+                """
+            SELECT
+                h.id,
+                h.name,
+                h.dock_id,
+                s.id shipId,
+                s.name shipName,
+                s.hauler_id
+            FROM Hauler h
+            JOIN Ship s
+                ON h.id = s.hauler_id
+            """
+            )
         else:
             db_cursor.execute(
                 """
@@ -87,6 +102,19 @@ def list_haulers(query_params):
                     "name": row["name"],
                     "dock_id": row["dock_id"],
                     "dock": dock,
+                }
+                haulers.append(hauler)
+            elif "_embed" in query_params:
+                ship = {
+                    "id": row["shipId"],
+                    "name": row["shipName"],
+                    "hauler_id": row["hauler_id"],
+                }
+                hauler = {
+                    "id": row["id"],
+                    "name": row["name"],
+                    "dock_id": row["dock_id"],
+                    "ship": ship,
                 }
                 haulers.append(hauler)
             else:
