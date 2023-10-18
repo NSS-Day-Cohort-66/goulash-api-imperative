@@ -2,6 +2,22 @@ import sqlite3
 import json
 
 
+def create_hauler(hauler_data):
+    with sqlite3.connect("./shipping.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        db_cursor.execute(
+            """
+            INSERT INTO Hauler (name, dock_id)
+            VALUES (?, ?)
+            """,
+            (hauler_data["name"], hauler_data["dock_id"]),
+        )
+
+    return True if db_cursor.rowcount > 0 else False
+
+
 def update_hauler(id, hauler_data):
     with sqlite3.connect("./shipping.db") as conn:
         db_cursor = conn.cursor()
@@ -101,7 +117,7 @@ def list_haulers(query_params):
             # Initialize an empty list and then add each dictionary to it
             haulers = []
 
-            def create_hauler(row):
+            def new_hauler(row):
                 hauler = {
                     "id": row["id"],
                     "name": row["name"],
@@ -127,7 +143,7 @@ def list_haulers(query_params):
                     }
                     found_hauler["ships"].append(ship)
                 else:
-                    create_hauler(row)
+                    new_hauler(row)
         else:
             db_cursor.execute(
                 """
