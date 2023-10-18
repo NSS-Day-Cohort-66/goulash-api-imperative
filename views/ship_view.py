@@ -61,22 +61,12 @@ def list_ships(url):
                 ON h.id = s.hauler_id
             """
             )
-        else:
-            db_cursor.execute(
-                """
-            SELECT
-                s.id,
-                s.name,
-                s.hauler_id
-            FROM Ship s
-            """
-            )
-        query_results = db_cursor.fetchall()
 
-        # Initialize an empty list and then add each dictionary to it
-        ships = []
-        for row in query_results:
-            if "_expand" in url["query_params"]:
+            query_results = db_cursor.fetchall()
+
+            # Initialize an empty list and then add each dictionary to it
+            ships = []
+            for row in query_results:
                 hauler = {
                     "id": row["haulerId"],
                     "name": row["haulerName"],
@@ -89,7 +79,22 @@ def list_ships(url):
                     "hauler": hauler,
                 }
                 ships.append(ship)
-            else:
+        else:
+            db_cursor.execute(
+                """
+            SELECT
+                s.id,
+                s.name,
+                s.hauler_id
+            FROM Ship s
+            """
+            )
+
+            query_results = db_cursor.fetchall()
+
+            # Initialize an empty list and then add each dictionary to it
+            ships = []
+            for row in query_results:
                 ships.append(dict(row))
 
         # Serialize Python list to JSON encoded string
