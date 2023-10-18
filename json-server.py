@@ -20,10 +20,10 @@ class JSONServer(HandleRequests):
 
         if url["requested_resource"] == "docks":
             if url["pk"] != 0:
-                response_body = retrieve_dock(url["pk"])
+                response_body = retrieve_dock(url["query_params"], url["pk"])
                 return self.response(response_body, status.HTTP_200_SUCCESS.value)
 
-            response_body = list_docks()
+            response_body = list_docks(url["query_params"])
             return self.response(response_body, status.HTTP_200_SUCCESS.value)
 
         elif url["requested_resource"] == "haulers":
@@ -138,10 +138,36 @@ class JSONServer(HandleRequests):
                 "Not found", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
             )
 
-    def do_POST(self):
-        """Handle POST requests from a client"""
+    # def do_POST(self):
+    #     """Handle POST requests from a client"""
 
-        pass
+    #     # Parse the URL
+    #     url = self.parse_url(self.path)
+
+    #     # Get the request body JSON for the new data
+    #     content_len = int(self.headers.get("content-length", 0))
+    #     post_data = self.rfile.read(content_len)
+    #     post_data = json.loads(request_body)
+
+    #     if url["requested_resource"] == "docks":
+    #         # Handle POST request for docks (create a new dock)
+    #         response_body = create_dock(post_data)
+    #         return self.response(response_body, status.HTTP_201_CREATED.value)
+
+    #     elif url["requested_resource"] == "haulers":
+    #         # Handle POST request for haulers (create a new hauler)
+    #         response_body = create_hauler(post_data)
+    #         return self.response(response_body, status.HTTP_201_CREATED.value)
+
+    #     elif url["requested_resource"] == "ships":
+    #         # Handle POST request for ships (create a new ship)
+    #         response_body = create_ship(post_data)
+    #         return self.response(response_body, status.HTTP_201_CREATED.value)
+
+    #     else:
+    #         return self.response(
+    #             "", status.HTTP_404_CLIENT_ERROR_RESOURCE_NOT_FOUND.value
+    #         )
 
 
 #
